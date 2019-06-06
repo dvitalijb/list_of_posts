@@ -31,14 +31,14 @@ function createElement(content = '', tag = 'td') {
     return element;
 }
 
-function createContentUl(comments) {
+function createContentUl(currentComments) {
     const ol = createElement('', 'ol');
 
-    for (let key in comments) {
+    for (const comment of currentComments) {
         const li = createElement('', 'li');
         const innerUl = createElement('', 'ul');
-        const commentLi = createElement(comments[key].body, 'li');
-        const authorCommentLi = createElement(comments[key].name, 'li');
+        const commentLi = createElement(comment.body, 'li');
+        const authorCommentLi = createElement(comment.name, 'li');
         innerUl.append(commentLi, authorCommentLi);
         li.append(innerUl);
         ol.append(li);
@@ -47,15 +47,16 @@ function createContentUl(comments) {
     return ol;
 }
 
-const createRow = propsMap => props => {
-    const { usersMap, commentsMap } = propsMap;
-    const { title, body, userId, id } = props;
-    const { name } = usersMap[userId];
-    const comments = {};
+const createRow = additionalProps => props => {
 
-    for (let key in commentsMap) {
-        if (commentsMap[key].postId === id) {
-            comments[key] = commentsMap[key];
+    const {usersMap, comments} = additionalProps;
+    const {title, body, userId, id} = props;
+    const {name} = usersMap[userId];
+    const currentComments = [];
+
+    for (const comment of comments) {
+        if (comment.postId === id) {
+            currentComments.push(comment);
         }
     }
 
@@ -64,7 +65,7 @@ const createRow = propsMap => props => {
     const bodyTd = createElement(body);
     const nameTd = createElement(name);
     const commentsTd = createElement();
-    const commentsUl = createContentUl(comments);
+    const commentsUl = createContentUl(currentComments);
 
     commentsTd.append(commentsUl);
     row.append(titleTd, bodyTd, nameTd, commentsTd);
@@ -75,8 +76,6 @@ const createRow = propsMap => props => {
 function createTable({posts, users, comments}) {
     const usersMap = users
         .reduce((acc, user) => ({...acc, [user.id]: user,}), {});
-    const commentsMap = comments
-        .reduce((acc, comment) => ({...acc, [comment.id]: comment,}), {});
 
     const table = createElement('', 'table');
     const thead = createElement('', 'thead');
@@ -84,7 +83,7 @@ function createTable({posts, users, comments}) {
     const headRow = createElement('', 'tr');
 
     const heads = headers.map(title => createElement(title, 'th'));
-    const rows = posts.map(createRow({usersMap, commentsMap}));
+    const rows = posts.map(createRow({usersMap, comments}));
 
     headRow.append(...heads);
     thead.append(headRow);
