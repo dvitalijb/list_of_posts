@@ -1,0 +1,35 @@
+li {
+    font-size: small;
+    list-style: none;
+    font-weight: lighter;
+    color: dimgray;
+}
+
+li:last-child {
+    font-weight: bold;
+    color: dimgray;
+}
+
+ul {
+    border: 1px solid lightcoral;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+ol {
+    margin: 0;
+    padding: 0;
+}
+
+td:first-child {
+    font-style: italic;
+}
+
+td:nth-child(2) {
+    font-size: large;
+}
+
+td:nth-child(3) {
+    font-size: small;
+    color: chocolate;
+}
